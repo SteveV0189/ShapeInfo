@@ -27,7 +27,6 @@ namespace InfoShape
             Legend.AddMapFrame(Map.MapFrame);
             Map.AddLayer(Program.INFILE);
             MapInstance = this.Map;
-            appManager1.LoadExtensions();
         }
 
         private void MapForm_Load(object sender, EventArgs e)

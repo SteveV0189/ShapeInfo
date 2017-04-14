@@ -56,15 +56,12 @@ namespace InfoShape
             this.spatialDockManager1 = new DotSpatial.Controls.SpatialDockManager();
             this.Legend = new DotSpatial.Controls.Legend();
             this.Map = new DotSpatial.Controls.Map();
-            this.appManager1 = new DotSpatial.Controls.AppManager();
-            this.spatialHeaderControl1 = new DotSpatial.Controls.SpatialHeaderControl();
             this.MapToolStrip.SuspendLayout();
             this.grpSnapshots.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.spatialDockManager1)).BeginInit();
             this.spatialDockManager1.Panel1.SuspendLayout();
             this.spatialDockManager1.Panel2.SuspendLayout();
             this.spatialDockManager1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spatialHeaderControl1)).BeginInit();
             this.SuspendLayout();
             // 
             // MapToolStrip
@@ -236,7 +233,7 @@ namespace InfoShape
             this.grpSnapshots.Controls.Add(this.btnExitMap);
             this.grpSnapshots.Controls.Add(this.btnMapTableSnapshot);
             this.grpSnapshots.Controls.Add(this.btnMapSnapshot);
-            this.grpSnapshots.Location = new System.Drawing.Point(12, 551);
+            this.grpSnapshots.Location = new System.Drawing.Point(12, 478);
             this.grpSnapshots.Name = "grpSnapshots";
             this.grpSnapshots.Size = new System.Drawing.Size(875, 98);
             this.grpSnapshots.TabIndex = 4;
@@ -307,7 +304,7 @@ namespace InfoShape
             | System.Windows.Forms.AnchorStyles.Right)));
             this.spatialDockManager1.BackColor = System.Drawing.Color.Transparent;
             this.spatialDockManager1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.spatialDockManager1.Location = new System.Drawing.Point(12, 113);
+            this.spatialDockManager1.Location = new System.Drawing.Point(12, 40);
             this.spatialDockManager1.Name = "spatialDockManager1";
             // 
             // spatialDockManager1.Panel1
@@ -368,28 +365,12 @@ namespace InfoShape
             this.Map.ZoomOutFartherThanMaxExtent = false;
             this.Map.SelectionChanged += new System.EventHandler(this.Map_SelectionChanged);
             // 
-            // appManager1
-            // 
-            this.appManager1.Directories = ((System.Collections.Generic.List<string>)(resources.GetObject("appManager1.Directories")));
-            this.appManager1.DockManager = this.spatialDockManager1;
-            this.appManager1.HeaderControl = null;
-            this.appManager1.Legend = this.Legend;
-            this.appManager1.Map = this.Map;
-            this.appManager1.ProgressHandler = null;
-            this.appManager1.ShowExtensionsDialogMode = DotSpatial.Controls.ShowExtensionsDialogMode.Default;
-            // 
-            // spatialHeaderControl1
-            // 
-            this.spatialHeaderControl1.ApplicationManager = null;
-            this.spatialHeaderControl1.MenuStrip = null;
-            this.spatialHeaderControl1.ToolbarsContainer = null;
-            // 
             // MapForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(901, 661);
+            this.ClientSize = new System.Drawing.Size(901, 588);
             this.Controls.Add(this.grpSnapshots);
             this.Controls.Add(this.MapToolStrip);
             this.Controls.Add(this.spatialDockManager1);
@@ -404,7 +385,6 @@ namespace InfoShape
             this.spatialDockManager1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.spatialDockManager1)).EndInit();
             this.spatialDockManager1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.spatialHeaderControl1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -437,7 +417,5 @@ namespace InfoShape
         private System.Windows.Forms.Button btnMapTableSnapshot;
         private System.Windows.Forms.Button btnMapSnapshot;
         private System.Windows.Forms.Button btnAttributeSnapshop;
-        private AppManager appManager1;
-        private SpatialHeaderControl spatialHeaderControl1;
     }
 }
