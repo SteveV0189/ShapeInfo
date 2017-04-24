@@ -1,6 +1,6 @@
 ﻿using DotSpatial.Controls;
 
-namespace InfoShape
+namespace ShapeReport
 {
     partial class MapForm
     {
@@ -51,7 +51,6 @@ namespace InfoShape
             this.grpSnapshots = new System.Windows.Forms.GroupBox();
             this.btnAttributeSnapshop = new System.Windows.Forms.Button();
             this.btnExitMap = new System.Windows.Forms.Button();
-            this.btnMapTableSnapshot = new System.Windows.Forms.Button();
             this.btnMapSnapshot = new System.Windows.Forms.Button();
             this.spatialDockManager1 = new DotSpatial.Controls.SpatialDockManager();
             this.Legend = new DotSpatial.Controls.Legend();
@@ -231,7 +230,6 @@ namespace InfoShape
             this.grpSnapshots.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.grpSnapshots.Controls.Add(this.btnAttributeSnapshop);
             this.grpSnapshots.Controls.Add(this.btnExitMap);
-            this.grpSnapshots.Controls.Add(this.btnMapTableSnapshot);
             this.grpSnapshots.Controls.Add(this.btnMapSnapshot);
             this.grpSnapshots.Location = new System.Drawing.Point(12, 478);
             this.grpSnapshots.Name = "grpSnapshots";
@@ -248,7 +246,7 @@ namespace InfoShape
             this.btnAttributeSnapshop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.PeachPuff;
             this.btnAttributeSnapshop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAttributeSnapshop.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAttributeSnapshop.Location = new System.Drawing.Point(426, 19);
+            this.btnAttributeSnapshop.Location = new System.Drawing.Point(216, 19);
             this.btnAttributeSnapshop.Name = "btnAttributeSnapshop";
             this.btnAttributeSnapshop.Size = new System.Drawing.Size(204, 70);
             this.btnAttributeSnapshop.TabIndex = 3;
@@ -266,21 +264,6 @@ namespace InfoShape
             this.btnExitMap.Text = "Done";
             this.btnExitMap.UseVisualStyleBackColor = true;
             this.btnExitMap.Click += new System.EventHandler(this.btnExitMap_Click);
-            // 
-            // btnMapTableSnapshot
-            // 
-            this.btnMapTableSnapshot.BackColor = System.Drawing.Color.SkyBlue;
-            this.btnMapTableSnapshot.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.btnMapTableSnapshot.FlatAppearance.BorderSize = 2;
-            this.btnMapTableSnapshot.FlatAppearance.MouseOverBackColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnMapTableSnapshot.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMapTableSnapshot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMapTableSnapshot.Location = new System.Drawing.Point(216, 19);
-            this.btnMapTableSnapshot.Name = "btnMapTableSnapshot";
-            this.btnMapTableSnapshot.Size = new System.Drawing.Size(204, 70);
-            this.btnMapTableSnapshot.TabIndex = 1;
-            this.btnMapTableSnapshot.Text = "Take Snapshot\r\n(map + attribute table)";
-            this.btnMapTableSnapshot.UseVisualStyleBackColor = false;
             // 
             // btnMapSnapshot
             // 
@@ -352,7 +335,7 @@ namespace InfoShape
             this.Map.FunctionMode = DotSpatial.Controls.FunctionMode.None;
             this.Map.IsBusy = false;
             this.Map.IsZoomedToMaxExtent = false;
-            this.Map.Legend = null;
+            this.Map.Legend = this.Legend;
             this.Map.Location = new System.Drawing.Point(0, 0);
             this.Map.Name = "Map";
             this.Map.ProgressHandler = null;
@@ -414,7 +397,6 @@ namespace InfoShape
         private System.Windows.Forms.ToolStripButton btnShowAttributes;
         private System.Windows.Forms.GroupBox grpSnapshots;
         private System.Windows.Forms.Button btnExitMap;
-        private System.Windows.Forms.Button btnMapTableSnapshot;
         private System.Windows.Forms.Button btnMapSnapshot;
         private System.Windows.Forms.Button btnAttributeSnapshop;
     }

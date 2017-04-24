@@ -15,7 +15,7 @@ using System.IO;
 using DotSpatial.Controls;
 using DotSpatial.Symbology;
 
-namespace InfoShape
+namespace ShapeReport
 {
     public partial class MapForm : Form
     {
@@ -24,7 +24,6 @@ namespace InfoShape
         public MapForm()
         {
             InitializeComponent();
-            Legend.AddMapFrame(Map.MapFrame);
             Map.AddLayer(Program.INFILE);
             MapInstance = this.Map;
         }
@@ -111,7 +110,10 @@ namespace InfoShape
         private void btnExitMap_Click(object sender, EventArgs e)
         {
             this.Close();
-            MainForm.Instance.Show();
+            MainForm.Instance.Invoke((MethodInvoker)delegate ()
+            {
+                MainForm.Instance.Show();
+            });
         }
 
         private void btnAttributeSnapshop_Click(object sender, EventArgs e)
@@ -121,18 +123,20 @@ namespace InfoShape
 
         private void btnMapSnapshot_Click(object sender, EventArgs e)
         {
-            var frm = new LayoutForm()
-            {
-                MapControl = Map
-            };
-            frm.Show();
+            var frm = new LayoutForm();
+            frm.MapControl = MapInstance;
             frm.OnSnapshotTaken += Frm_OnSnapshotTaken;
+            var result = frm.ShowDialog();
         }
-
 
         private void Frm_OnSnapshotTaken(object sender, LayoutForm.SnapShotArgs e)
         {
-            e.Image.Save(Program.OUTIMAGE);
+            var frm = new SaveItem();
+            var result = frm.ShowDialog(this);
+            if (result == DialogResult.OK)
+            {
+                Workspace.Instance.SaveImage(e.Image, frm.SaveName, frm.GroupName);                
+            }
         }
     }
 }

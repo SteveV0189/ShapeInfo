@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace InfoShape
+namespace ShapeReport
 {
     public partial class SnapshotAttributeTable : Form
     {
@@ -112,7 +112,7 @@ namespace InfoShape
                 var result = frm.ShowDialog(this);
                 if (result == DialogResult.OK)
                 {
-                    ItemManager.Instance.SaveDataset((DataTable)dataSelection.DataSource, frm.SaveName);
+                    Workspace.Instance.SaveDataset((DataTable)dataSelection.DataSource, frm.SaveName, frm.GroupName);
                 }
             }
         }

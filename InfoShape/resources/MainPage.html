@@ -4,16 +4,250 @@
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="~/resources/MapForm.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.4.1/croppie.min.css" />
+        <link rel="stylesheet" type="text/css" href="~/resources/MainForm.css" />
+        <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet"> 
         <title>InfoShape</title>
     </head>
     <body>
-        <div>
-            @Model.Name
+        <div id="title">
+            <h1>ShapeReport</h1>
+        </div>
+        <!--<button id="debug-console" class="btn btn-primary" onclick="CefBridge.showDevTools();">Console</button>
+        <button id="debug-reload" class="btn btn-warning" onclick="CefBridge.reloadHtml();">Refresh</button>-->
+        <div id="tab-container">
+            <ul class="nav nav-tabs col-xs-12">
+                <li class="active col-xs-4"><a data-toggle="tab" href="#main">Main</a></li>
+                <li class="col-xs-4"><a data-toggle="tab" href="#image-fix" id="image-fix-tab">Fix Images</a></li>
+                <li class="col-xs-4"><a data-toggle="tab" href="#pdf" id="preview-pdf-tab">Preview PDF</a></li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div id="main" class="tab-pane fade in active">
+                <div class="col-xs-6" id="left-pane">
+                    <div class="col-xs-12">
+                        <h3>Workspace</h3>
+                        <div id="categories-container" class="well col-xs-10" data-bind="foreach: categories">
+                            <div data-bind="css: { 'selected-item' : selected }, click: $root.selectItem">
+                                <p data-bind="text: name, css: opened() ? 'arrow-down' : 'arrow-right', click: $root.toggleOpen" class="item-group"></p>
+                            </div>
+                            <!--ko if: opened -->
+                                <!--ko foreach: items-->
+                                    <div data-bind="css: { 'selected-item' : selected }, click: $root.selectItem">
+                                        <p class="itemgroup-item" data-bind="text: name, css: 'item-' + type()"></p>
+                                    </div>
+                                <!--/ko-->
+                            <!--/ko-->
+                        </div>
+                        <div class="col-xs-2">
+                            <button data-bind="click: moveSelectionUp" class="arrow-button btn btn-default"><p class="arrow-button-inner glyphicon glyphicon-arrow-up"></p></button>
+                            <button data-bind="click: moveSelectionDown" class="arrow-button btn btn-default"><p class="arrow-button-inner glyphicon glyphicon-arrow-down"></p></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6" id="right-pane">
+                    <div class="col-xs-12">
+                        <h3>Operations</h3>
+                        <button class="btn btn-primary" onclick="CefBridge.showMapForm();">Add Snapshots</button>
+                        <button class="btn btn-primary" onclick="CefBridge.generatePdf();">Preview PDF</button>
+                        <button class="btn btn-primary" onclick="CefBridge.generatePdf();">Generate PDF</button>
+
+                    </div>
+                </div>
+            </div>
+            <div id="image-fix" class="tab-pane fade">
+                <div class="col-xs-6">
+                    <select class="form-control" data-bind="options: $root.getImages(), value: selectedImage, optionsCaption: 'Select an Image', optionsText: 'name'"></select>
+                </div>
+                <div class="col-xs-6">
+                    <button data-bind="enable: selectedImage" class="btn btn-info" type="button" id="crop-now">Crop</button>
+                    <button data-bind="enable: selectedImage" class="btn btn-primary" type="button" id="crop-save">Save Result</button>
+                </div>
+                <div class="col-xs-12" id="crop-container" data-bind="if: selectedImage">
+                    <img height="350" src="" data-bind="attr: { src : $root.selectedImage().path }" id="crop-image"/>
+                </div>
+            </div>
+            <div id="pdf" class="tab-pane fade">
+                <div class="col-xs-12">
+                    <iframe id="preview-pdf-frame" src=""></iframe>
+                </div>
+            </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.4.min.js"
                 integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
                 crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.4.1/croppie.min.js"></script>
+        <script>
+            var vm;
+            var cropper;
+            $(function () {
+                function toDataURL(src, callback, outputFormat) {
+                    var img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    img.onload = function () {
+                        var canvas = document.createElement('CANVAS');
+                        var ctx = canvas.getContext('2d');
+                        var dataURL;
+                        canvas.height = this.height;
+                        canvas.width = this.width;
+                        ctx.drawImage(this, 0, 0);
+                        dataURL = canvas.toDataURL(outputFormat);
+                        callback(dataURL);
+                    };
+                    img.src = src;
+                    if (img.complete || img.complete === undefined) {
+                        img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+                        img.src = src;
+                    }
+                }
+                $('#crop-now').click(function () {
+                    cropper = $('#crop-image').croppie();
+                });
+                $('#crop-save').click(function () {
+                    cropper.croppie('result', 'html').then(function (data) {
+                        CefBridge.saveCroppedImage(data, vm.selectedImage.path);
+                    });
+                });
+                $('#preview-pdf-tab').click(function () {
+                    $('#preview-pdf-frame').attr('src', "");
+                    var file = CefBridge.compilePdf();
+                    $('#preview-pdf-frame').attr('src', file);
+                });
+                var viewModel = function () {
+                    var self = this;
+                    this.categories = ko.observableArray();
+                    this.toggleOpen = function (data, ev) {
+                        data.opened(!data.opened());
+                        ev.stopPropagation();
+                    };
+                    this.moveSelectionUp = function () {
+                        var selection = self.getSelectedItem();
+                        if (selection.item) {
+                            if (!(self.tryMoveItemUp(selection.category, selection.item))) {
+                                self.transferItemUp(selection.category, selection.item);
+                            }
+                        } else if (selection.category) {
+                            self.moveCategoryUp(selection.category);
+                        }
+                    };
+                    this.moveSelectionDown = function () {
+                        var selection = self.getSelectedItem();
+                        if (selection.item) {
+                            if (!(self.tryMoveItemDown(selection.category, selection.item))) {
+                                self.transferItemDown(selection.category, selection.item);
+                            }
+                        } else if (selection.category) {
+                            self.moveCategoryDown(selection.category);
+                        }
+                    };
+                    this.moveCategoryDown = function (category) {
+                        var i = self.categories().indexOf(category);
+                        if (i < self.categories().length - 1) {
+                            var rawCategories = self.categories();
+                            self.categories.splice(i, 2, rawCategories[i + 1], rawCategories[i]);
+                        }
+                    };
+                    this.moveCategoryUp = function (category) {
+                        var i = self.categories.indexOf(category);
+                        if (i >= 1) {
+                            var array = self.categories();
+                            self.categories.splice(i - 1, 2, array[i], array[i - 1]);
+                        }
+                    };
+                    this.tryMoveItemDown = function (category, item) {
+                        var i = category.items.indexOf(item);
+                        if (i < category.items().length - 1) {
+                            var rawItems = category.items();
+                            category.items.splice(i, 2, rawItems[i + 1], rawItems[i]);
+                            return true;
+                        }
+                        return false;
+                    };
+                    this.tryMoveItemUp = function (category, item) {
+                        var i = category.items.indexOf(item);
+                        if (i >= 1) {
+                            var array = category.items();
+                            category.items.splice(i - 1, 2, array[i], array[i - 1]);
+                            return true;
+                        }
+                        return false;
+                    };
+                    this.transferItemUp = function (category, item) {
+                        var idx = self.categories.indexOf(category);
+                        if (idx >= 1) {
+                            self.categories()[idx - 1].items.push(category.items.remove(item)[0]);
+                        }
+                    };
+                    this.transferItemDown = function (category, item) {
+                        var idx = self.categories.indexOf(category);
+                        if (idx < self.categories().length - 1) {
+                            self.categories()[idx + 1].items.unshift(category.items.remove(item)[0]);
+                        }
+                    };
+                    this.selectItem = function (data, ev) {
+                        if (data.selected()) {
+                            data.selected(false);
+                        } else {
+                            var selection = self.getSelectedItem();
+                            if (selection.category) {
+                                selection.category.selected(false);
+                            }
+                            if (selection.item) {
+                                selection.item.selected(false);
+                            }
+                            data.selected(true);
+                        }
+                    };
+                    this.getSelectedItem = function () {
+                        var selection = { category: null, item: null };
+                        selection.category = ko.utils.arrayFirst(self.categories(), function (category) {
+                            selection.item = ko.utils.arrayFirst(category.items(), function (item) {
+                                if (item.selected()) {
+                                    selection.category = category;
+                                }
+                                return item.selected();
+                            });
+                            return category.selected() || selection.category != null;
+                        });
+                        return selection;
+                    };
+                    this.getImages = function () {
+                        var arr = [];
+                        $.each(self.categories(), function (idx, ele) {
+                            $.each(ele.items(), function (iidx, iele) {
+                                if (iele.type() == "image") {
+                                    arr.push({name:iele.name(),path:iele.filePath()})
+                                }
+                            });
+                        });
+                        return arr;
+                    };
+                    this.selectedImage = ko.observable();
+                };
+                function init() {
+                    vm = new viewModel();
+                    var mapping = {
+                        "categories": {
+                            create: function (options) {
+                                var result = ko.mapping.fromJS(options.data);
+                                result.opened = ko.observable(true);
+                                result.selected = ko.observable(false);
+                                $.each(result.items(), function (idx, ele) {
+                                    ele.selected = ko.observable(false);
+                                });
+                                return result;
+                            }
+                        }
+                    }
+                    var categories = CefBridge.getItemGroups();
+                    ko.mapping.fromJSON(categories, mapping, vm);
+                }
+                init();
+                ko.applyBindings(vm);
+            });
+        </script>
     </body>
 </html>

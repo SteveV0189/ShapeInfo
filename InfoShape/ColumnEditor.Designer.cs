@@ -1,4 +1,4 @@
-﻿namespace InfoShape
+﻿namespace ShapeReport
 {
     partial class ColumnEditor
     {

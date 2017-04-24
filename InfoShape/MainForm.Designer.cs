@@ -1,4 +1,4 @@
-﻿namespace InfoShape
+﻿namespace ShapeReport
 {
     partial class MainForm
     {
@@ -34,10 +34,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(590, 427);
+            this.ClientSize = new System.Drawing.Size(687, 762);
+            this.MinimumSize = new System.Drawing.Size(700, 800);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.VisibleChanged += new System.EventHandler(this.MainForm_VisibleChanged);
             this.ResumeLayout(false);
 
         }

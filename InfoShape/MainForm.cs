@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace InfoShape
+namespace ShapeReport
 {
     public partial class MainForm : Form
     {
@@ -30,7 +30,10 @@ namespace InfoShape
         private void MainForm_Load(object sender, EventArgs e)
         {
             InitChromium();
-            Browser.RegisterJsObject("CefBridge", new CefBridge(Browser, this));
+            Browser.RegisterJsObject("CefBridge", new CefBridge(Browser, this)
+            {
+                MapForm = new MapForm()
+            });
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -41,9 +44,10 @@ namespace InfoShape
         private string GetLocalHtmlString()
         {
             var uncompiled = File.ReadAllText(MAP_FORM_HTML);
-            var compiled = Engine.Razor.RunCompile(uncompiled, $"MapCompile-{DateTime.Now.ToShortDateString()}", null, new
+            var compiled = Engine.Razor.RunCompile(uncompiled, $"MapCompile-{DateTime.Now}", null, new
             {
-                Name = "Bob"
+                Name = "Bob",
+                ImageTest = Workspace.Instance.GetItemGroups().First(g => g.GetItems().Any(i => i.GetItemType() == Models.WorkspaceItem.ItemType.Image)).GetItems().First(i => i.GetItemType() == Models.WorkspaceItem.ItemType.Image).FilePath
             });
             return compiled;
         }
@@ -58,6 +62,7 @@ namespace InfoShape
             Browser.Dock = DockStyle.Fill;
             var settings = new BrowserSettings()
             {
+                WebSecurity = CefState.Disabled,
                 FileAccessFromFileUrls = CefState.Enabled,
                 UniversalAccessFromFileUrls = CefState.Enabled,
                 LocalStorage = CefState.Enabled
@@ -65,9 +70,20 @@ namespace InfoShape
             Browser.BrowserSettings = settings;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public static void ReloadHtml()
         {
-            Browser.ShowDevTools();
+            var dir = Path.Combine(Environment.CurrentDirectory + @"..\..\..\..\resources\");
+            File.Copy(dir + "MainPage.html", Environment.CurrentDirectory + @"\resources\MainPage.html", true);
+            File.Copy(dir + "MainForm.css", Environment.CurrentDirectory + @"\resources\MainForm.css", true);
+            Instance.Browser.LoadHtml(Instance.GetLocalHtmlString(), $"File://");
+        }
+
+        private void MainForm_VisibleChanged(object sender, EventArgs e)
+        {
+            if (Visible)
+            {
+                Instance.Browser.LoadHtml(Instance.GetLocalHtmlString(), $"File://");
+            }
         }
     }
 }
